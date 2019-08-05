@@ -487,7 +487,8 @@
 
       'include_dirs': [
         'src',
-        '<(SHARED_INTERMEDIATE_DIR)' # for node_natives.h
+        'deps/v8/include',
+        '<(SHARED_INTERMEDIATE_DIR)' # for node_natives.h,
       ],
       'dependencies': [ 'deps/histogram/histogram.gyp:histogram' ],
 
