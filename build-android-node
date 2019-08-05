@@ -32,8 +32,6 @@ export LINK=$TOOLCHAIN_DIR/bin/armv7a-linux-androideabi$API_LEVEL-clang++
 export RANLIB=$TOOLCHAIN_DIR/bin/arm-linux-androideabi-ranlib
 export STRIP=$TOOLCHAIN_DIR/bin/arm-linux-androideabi-strip
 
-cd node
-
 export GYP_DEFINES="OS=android clang=1"
 
 function myconf() {
@@ -50,9 +48,9 @@ function myconf() {
 if [ -z ${2+x} ]; then
   myconf && make
   cd $scriptdir
-  x=compiled/armeabi-v7a/
+  x=android-compiled/armeabi-v7a/
   mkdir -p $x
-  cp node/out/Release/lib.target/libnode.so $x/
+  cp out/Release/lib.target/libnode.so $x/
 else
   eval $2
 fi
