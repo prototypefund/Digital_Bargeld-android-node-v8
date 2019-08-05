@@ -38,7 +38,7 @@ class V8_PLATFORM_EXPORT TraceObject {
 
   TraceObject() = default;
   ~TraceObject();
-  void Initialize(
+  V8_PLATFORM_EXPORT void Initialize(
       char phase, const uint8_t* category_enabled_flag, const char* name,
       const char* scope, uint64_t id, uint64_t bind_id, int num_args,
       const char** arg_names, const uint8_t* arg_types,
@@ -112,8 +112,8 @@ class V8_PLATFORM_EXPORT TraceWriter {
   virtual void AppendTraceEvent(TraceObject* trace_event) = 0;
   virtual void Flush() = 0;
 
-  static TraceWriter* CreateJSONTraceWriter(std::ostream& stream);
-  static TraceWriter* CreateJSONTraceWriter(std::ostream& stream,
+  V8_PLATFORM_EXPORT static TraceWriter* CreateJSONTraceWriter(std::ostream& stream);
+  V8_PLATFORM_EXPORT static TraceWriter* CreateJSONTraceWriter(std::ostream& stream,
                                             const std::string& tag);
 
  private:

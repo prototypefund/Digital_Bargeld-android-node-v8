@@ -168,7 +168,7 @@ class TracingController {
       unsigned int flags) {
     return 0;
   }
-  virtual uint64_t AddTraceEventWithTimestamp(
+  V8_EXPORT virtual uint64_t AddTraceEventWithTimestamp(
       char phase, const uint8_t* category_enabled_flag, const char* name,
       const char* scope, uint64_t id, uint64_t bind_id, int32_t num_args,
       const char** arg_names, const uint8_t* arg_types,
