@@ -73,6 +73,14 @@
         'tools/v8_gypfiles/v8.gyp:v8_maybe_snapshot',
         'tools/v8_gypfiles/v8.gyp:v8_libplatform',
       ],
+    },{
+      'libraries' : [
+         '<!(pwd)/deps/v8/out.gn/arm.debug/libv8_libbase.cr.so',
+         '<!(pwd)/deps/v8/out.gn/arm.debug/libv8_libplatform.cr.so',
+         '<!(pwd)/deps/v8/out.gn/arm.debug/libv8.cr.so',
+         '<!(pwd)/deps/v8/out.gn/arm.debug/libicui18n.cr.so',
+         '<!(pwd)/deps/v8/out.gn/arm.debug/libicuuc.cr.so',
+      ],
     }],
     [ 'node_use_v8_platform=="true"', {
       'defines': [
