@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+cd $scriptdir
+
+NDK=$1
+
+DEST_CPU_ARCH='arm'
+API_LEVEL=26
+BUILD_HOST_TAG='linux-x86_64'
+TOOLCHAIN_DIR=$NDK/toolchains/llvm/prebuilt/$BUILD_HOST_TAG/
+
+if [[ ! -d "$NDK" ]]; then
+  echo "Android NDK directory '$NDK' invalid"
+  exit 1
+fi
+
+if [[ ! -d "$TOOLCHAIN_DIR" ]]; then
+  echo "Toolchain directory '$TOOLCHAIN_DIR' invalid"
+  exit 1
+fi
+
+# The naming of these isn't very consistent, as some tools start with arm,
+# others with arm7a.
+export AR=$TOOLCHAIN_DIR/bin/arm-linux-androideabi-ar
+export CC=$TOOLCHAIN_DIR/bin/armv7a-linux-androideabi$API_LEVEL-clang
+export CXX=$TOOLCHAIN_DIR/bin/armv7a-linux-androideabi$API_LEVEL-clang++
+export LD=$TOOLCHAIN_DIR/bin/arm-linux-androideabi-ld
+export LINK=$TOOLCHAIN_DIR/bin/armv7a-linux-androideabi$API_LEVEL-clang++
+export RANLIB=$TOOLCHAIN_DIR/bin/arm-linux-androideabi-ranlib
+export STRIP=$TOOLCHAIN_DIR/bin/arm-linux-androideabi-strip
+
+cd node
+
+export GYP_DEFINES="OS=android clang=1"
+
+function myconf() {
+  ./configure \
+      --dest-cpu=$DEST_CPU_ARCH \
+      --dest-os=android \
+      --without-snapshot \
+      --without-intl \
+      --openssl-no-asm \
+      --without-bundled-v8 \
+      --shared
+}
+
+if [ -z ${2+x} ]; then
+  myconf && make
+  cd $scriptdir
+  x=compiled/armeabi-v7a/
+  mkdir -p $x
+  cp node/out/Release/lib.target/libnode.so $x/
+else
+  eval $2
+fi
