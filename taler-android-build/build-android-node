@@ -3,7 +3,7 @@
 set -eu -o pipefail
 
 scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-cd $scriptdir
+cd $scriptdir/..
 
 NDK=$1
 
@@ -36,9 +36,10 @@ export GYP_DEFINES="OS=android clang=1"
 
 function myconf() {
   ./configure \
+      --ninja \
+      --cross-compiling \
       --dest-cpu=$DEST_CPU_ARCH \
       --dest-os=android \
-      --without-snapshot \
       --without-intl \
       --openssl-no-asm \
       --without-bundled-v8 \
@@ -47,10 +48,10 @@ function myconf() {
 
 if [ -z ${2+x} ]; then
   myconf && make
-  cd $scriptdir
-  x=android-compiled/armeabi-v7a/
+  cd $scriptdir/..
+  x=$scriptdir/compiled/armeabi-v7a/
   mkdir -p $x
-  cp out/Release/lib.target/libnode.so $x/
+  cp out/Release/lib/libnode.so $x/
 else
   eval $2
 fi

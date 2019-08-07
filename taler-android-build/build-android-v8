@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+cd $scriptdir/..
+
+NDK=$1
+
+DEST_CPU_ARCH='arm'
+API_LEVEL=26
+BUILD_HOST_TAG='linux-x86_64'
+TOOLCHAIN_DIR=$NDK/toolchains/llvm/prebuilt/$BUILD_HOST_TAG/
+
+if [[ ! -d "$NDK" ]]; then
+  echo "Android NDK directory '$NDK' invalid"
+  exit 1
+fi
+
+ln -fs $NDK ./deps/v8/third_party/android_ndk
+
+# We do not export anything about the tool chain, as v8
+# will pick their own toolchain for android from the ndk
+
+cd ./deps/v8
+
+python2 ./tools/node/fetch_deps.py $PWD
+
+gn_args='
+is_debug = true
+v8_enable_backtrace = true
+v8_enable_slow_dchecks = true
+v8_optimized_debug = false
+v8_target_cpu = "arm"
+target_os="android"
+target_cpu="arm"
+is_component_build=true
+v8_android_log_stdout=true
+v8_use_external_startup_data=false
+v8_use_snapshot=true
+v8_enable_debugging_features=true
+v8_enable_embedded_builtins=true
+is_clang=true
+use_custom_libcxx=false
+'
+
+./_depot_tools/gn gen out.gn/arm-android "--args=$gn_args"
+
+./_depot_tools/ninja -C out.gn/arm-android v8 d8
+
+cd $scriptdir/..
+x=$scriptdir/compiled/armeabi-v7a/
+mkdir -p $x
+cp deps/v8/out.gn/arm-android/*.so $x/
