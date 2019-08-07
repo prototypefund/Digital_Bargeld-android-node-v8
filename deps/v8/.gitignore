@@ -36,7 +36,6 @@
 .torquelint-cache
 .vscode
 /_*
-/build
 /buildtools
 /check-header-includes
 /hydrogen.cfg
