@@ -70,6 +70,9 @@ template("create_native_executable_dist") {
     if (defined(invoker.deps)) {
       data_deps += invoker.deps
     }
+    if (is_component_build || is_asan) {
+      data_deps += [ "//build/android:cpplib_stripped" ]
+    }
     write_runtime_deps = _runtime_deps_file
   }
 
@@ -2190,6 +2193,17 @@ if (enable_java_templates) {
     _secondary_abi_shared_libraries_is_valid =
         defined(invoker.secondary_abi_shared_libraries) &&
         invoker.secondary_abi_shared_libraries != []
+
+    if (is_component_build || is_asan) {
+      if (_shared_libraries_is_valid) {
+        _native_libs_deps += [ "//build/android:cpplib_stripped" ]
+      }
+      if (_secondary_abi_shared_libraries_is_valid) {
+        _secondary_abi_native_libs_deps += [
+          "//build/android:cpplib_stripped($android_secondary_abi_toolchain)",
+        ]
+      }
+    }
 
     if (_shared_libraries_is_valid) {
       _native_libs_deps += invoker.shared_libraries
