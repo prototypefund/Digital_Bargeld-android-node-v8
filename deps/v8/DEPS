@@ -437,13 +437,6 @@ hooks = [
     'action': ['python', 'v8/tools/clang/scripts/update.py'],
   },
   {
-    # Update LASTCHANGE.
-    'name': 'lastchange',
-    'pattern': '.',
-    'action': ['python', 'v8/build/util/lastchange.py',
-               '-o', 'v8/build/util/LASTCHANGE'],
-  },
-  {
     'name': 'fuchsia_sdk',
     'pattern': '.',
     'condition': 'checkout_fuchsia',
