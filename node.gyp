@@ -32,6 +32,7 @@
       'lib/internal/per_context/primordials.js',
       'lib/internal/per_context/setup.js',
       'lib/internal/per_context/domexception.js',
+      'lib/akono.js',
       'lib/async_hooks.js',
       'lib/assert.js',
       'lib/buffer.js',
