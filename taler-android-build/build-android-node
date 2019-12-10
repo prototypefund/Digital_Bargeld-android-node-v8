@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# This script assumes that all the right environment variables
+# (CC, LD, STRIP, ...) areset.
+
+set -eu -o pipefail
+
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+cd $scriptdir/..
+
+export GYP_DEFINES="OS=android clang=1"
+
+function myconf() {
+  ./configure \
+      --ninja \
+      --cross-compiling \
+      --dest-cpu=$DEST_CPU_ARCH \
+      --dest-os=android \
+      --without-intl \
+      --openssl-no-asm \
+      --without-bundled-v8 \
+      --shared
+}
+
+myconf && make

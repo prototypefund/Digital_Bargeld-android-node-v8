@@ -68,6 +68,51 @@
     [ 'node_enable_d8=="true"', {
       'dependencies': [ 'tools/v8_gypfiles/d8.gyp:d8' ],
     }],
+    [ 'node_use_bundled_v8=="false" and target_arch=="arm" and OS=="android"', {
+      'libraries': [
+         '<!(pwd)/deps/v8/out.gn/android-arm/libv8_libbase.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm/libv8_libplatform.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm/libv8.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm/libicui18n.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm/libicuuc.cr.so',
+    ]
+    }],
+    [ 'node_use_bundled_v8=="false" and target_arch=="arm64" and OS=="android"', {
+      'libraries': [
+         '<!(pwd)/deps/v8/out.gn/android-arm64/libv8_libbase.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm64/libv8_libplatform.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm64/libv8.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm64/libicui18n.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-arm64/libicuuc.cr.so',
+    ]
+    }],
+    [ 'node_use_bundled_v8=="false" and target_arch=="x86" and OS=="android"', {
+      'libraries': [
+         '<!(pwd)/deps/v8/out.gn/android-x86/libv8_libbase.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libv8_libplatform.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libv8.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libicui18n.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libicuuc.cr.so',
+    ]
+    }],
+    [ 'node_use_bundled_v8=="false" and target_arch=="ia32" and OS=="android"', {
+      'libraries': [
+         '<!(pwd)/deps/v8/out.gn/android-x86/libv8_libbase.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libv8_libplatform.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libv8.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libicui18n.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x86/libicuuc.cr.so',
+    ]
+    }],
+    [ 'node_use_bundled_v8=="false" and target_arch=="x64" and OS=="android"', {
+      'libraries': [
+         '<!(pwd)/deps/v8/out.gn/android-x64/libv8_libbase.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x64/libv8_libplatform.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x64/libv8.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x64/libicui18n.cr.so',
+         '<!(pwd)/deps/v8/out.gn/android-x64/libicuuc.cr.so',
+    ]
+    }],
     [ 'node_use_bundled_v8=="true"', {
       'dependencies': [
         'tools/v8_gypfiles/v8.gyp:v8_maybe_snapshot',

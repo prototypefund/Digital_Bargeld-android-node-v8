@@ -1187,12 +1187,7 @@ uvwasi_errno_t uvwasi_fd_readdir(uvwasi_t* uvwasi,
   dir->nentries = UVWASI__READDIR_NUM_ENTRIES;
   uv_fs_req_cleanup(&req);
 
-#ifndef _WIN32
-  /* TODO(cjihrig): Need a Windows equivalent of this logic. */
-  /* Seek to the proper location in the directory. */
-  if (cookie != UVWASI_DIRCOOKIE_START)
-    seekdir(dir->dir, cookie);
-#endif
+  /* seekdir does not exist on android */
 
   /* Read the directory entries into the provided buffer. */
   err = UVWASI_ESUCCESS;
@@ -1209,16 +1204,9 @@ uvwasi_errno_t uvwasi_fd_readdir(uvwasi_t* uvwasi,
          consistently across platforms. In other words, d_next should always
          be 8 bytes, d_ino should always be 8 bytes, d_namlen should always be
          4 bytes, and d_type should always be 1 byte. */
-#ifndef _WIN32
-      tell = telldir(dir->dir);
-      if (tell < 0) {
-        err = uvwasi__translate_uv_error(uv_translate_sys_error(errno));
-        uv_fs_req_cleanup(&req);
-        goto exit;
-      }
-#else
+
+      /* seekdir does not exist on android */
       tell = 0; /* TODO(cjihrig): Need to support Windows. */
-#endif /* _WIN32 */
 
       name_len = strlen(dirents[i].name);
       dirent.d_next = (uvwasi_dircookie_t) tell;

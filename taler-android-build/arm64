@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+cd $scriptdir
+
+NDK=$1
+
+API_LEVEL=21
+BUILD_HOST_TAG='linux-x86_64'
+TOOLCHAIN_DIR=$NDK/toolchains/llvm/prebuilt/$BUILD_HOST_TAG/
+
+if [[ ! -d "$NDK" ]]; then
+  echo "Android NDK directory '$NDK' invalid"
+  exit 1
+fi
+
+if [[ ! -d "$TOOLCHAIN_DIR" ]]; then
+  echo "Toolchain directory '$TOOLCHAIN_DIR' invalid"
+  exit 1
+fi
+
+##########
+# Build V8
+##########
+
+./build-android-v8 "$1" arm64
+
+cd $scriptdir/..
+x=$scriptdir/compiled/arm64-v8a/
+mkdir -p $x
+cp deps/v8/out.gn/android-arm64/*.so $x/
+
+
+
+############
+# Build Node
+############
+
+# The naming of these isn't very consistent, as some tools start with arm,
+# others with arm7a.
+export AR=$TOOLCHAIN_DIR/bin/aarch64-linux-android-ar
+export LD=$TOOLCHAIN_DIR/bin/aarch64-linux-android-ld
+export RANLIB=$TOOLCHAIN_DIR/bin/aarch64-linux-android-ranlib
+export STRIP=$TOOLCHAIN_DIR/bin/aarch64-linux-android-strip
+
+export CC=$TOOLCHAIN_DIR/bin/aarch64-linux-android$API_LEVEL-clang
+export CXX=$TOOLCHAIN_DIR/bin/aarch64-linux-android$API_LEVEL-clang++
+export LINK=$TOOLCHAIN_DIR/bin/aarch64-linux-android$API_LEVEL-clang++
+
+export DEST_CPU_ARCH=arm64
+
+cd $scriptdir
+
+./build-android-node "$1" arm64
+
+cd $scriptdir/..
+x=$scriptdir/compiled/arm64-v8a/
+mkdir -p $x
+cp out/Release/lib/libnode.so $x/

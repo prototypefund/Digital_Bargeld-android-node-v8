@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+scriptdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+cd $scriptdir/..
+
+NDK=$1
+DEST_CPU_ARCH=$2
+
+if [[ ! -d "$NDK" ]]; then
+  echo "Android NDK directory '$NDK' invalid"
+  exit 1
+fi
+
+ln -fs $NDK ./deps/v8/third_party/android_ndk
+
+# We do not export anything about the tool chain, as v8
+# will pick their own toolchain for android from the ndk
+
+cd ./deps/v8
+
+python3 ./tools/node/fetch_deps.py $PWD
+
+gn_args=$(cat <<EOF
+is_official_build = true
+is_debug = false
+v8_enable_backtrace = false
+v8_enable_slow_dchecks = true
+v8_optimized_debug = false
+v8_target_cpu = "$DEST_CPU_ARCH"
+target_os="android"
+target_cpu="$DEST_CPU_ARCH"
+is_component_build=true
+v8_android_log_stdout=true
+v8_use_external_startup_data=false
+v8_enable_debugging_features=false
+v8_enable_embedded_builtins=true
+is_clang=true
+use_custom_libcxx=false
+EOF
+)
+
+echo gn_args $gn_args
+
+echo "executing gn gen"
+
+./buildtools/linux64/gn gen out.gn/android-$DEST_CPU_ARCH "--args=$gn_args"
+
+echo "executing ninja"
+
+./_depot_tools/ninja -C out.gn/android-$DEST_CPU_ARCH v8 d8

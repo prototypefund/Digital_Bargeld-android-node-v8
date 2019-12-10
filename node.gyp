@@ -30,6 +30,7 @@
       'lib/internal/bootstrap/pre_execution.js',
       'lib/internal/per_context/primordials.js',
       'lib/internal/per_context/domexception.js',
+      'lib/akono.js',
       'lib/async_hooks.js',
       'lib/assert.js',
       'lib/buffer.js',
@@ -497,6 +498,7 @@
 
       'include_dirs': [
         'src',
+        'deps/v8/include',
         '<(SHARED_INTERMEDIATE_DIR)' # for node_natives.h
       ],
       'dependencies': [

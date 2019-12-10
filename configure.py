@@ -1117,14 +1117,18 @@ def configure_node(o):
   o['variables']['node_shared'] = b(options.shared)
   node_module_version = getmoduleversion.get_version()
 
-  if sys.platform == 'darwin':
-    shlib_suffix = '%s.dylib'
-  elif sys.platform.startswith('aix'):
-    shlib_suffix = '%s.a'
+  if options.dest_os == 'android':
+    shlib_suffix = "so"
   else:
     shlib_suffix = 'so.%s'
+    if sys.platform == 'darwin':
+      shlib_suffix = '%s.dylib'
+    elif sys.platform.startswith('aix'):
+      shlib_suffix = '%s.a'
+    else:
+      shlib_suffix = 'so.%s'
+    shlib_suffix %= node_module_version
 
-  shlib_suffix %= node_module_version
   o['variables']['node_module_version'] = int(node_module_version)
   o['variables']['shlib_suffix'] = shlib_suffix
 
@@ -1759,6 +1763,8 @@ gyp_args += args
 
 if warn.warned and not options.verbose:
   warn('warnings were emitted in the configure phase')
+
+print("gyp args", gyp_args)
 
 print_verbose("running: \n    " + " ".join(['python', 'tools/gyp_node.py'] + gyp_args))
 run_gyp(gyp_args)
